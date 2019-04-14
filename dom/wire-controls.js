@@ -1,14 +1,13 @@
-var listenersInit = false;
+var dootButton = document.getElementById('doot-button');
+var textField = document.getElementById('text-field');
 
-var sillyNameButton = document.getElementById('silly-name-button');
+function wireControls({ onSharkify }) {
+  dootButton.removeEventListener('click', onButtonClick);
+  dootButton.addEventListener('click', onButtonClick);
 
-function wireControls({ makeSillyName }) {
-  if (listenersInit) {
-    return;
+  function onButtonClick() {
+    onSharkify({ text: textField.value });
   }
-  listenersInit = true;
-
-  sillyNameButton.addEventListener('click', makeSillyName);
 }
 
 module.exports = wireControls;

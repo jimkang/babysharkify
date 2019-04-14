@@ -23,8 +23,15 @@
     "uglify-es": "^3.1.9"
   },
   "dependencies": {
+    "async-waterfall": "^0.1.5",
+    "basic-browser-request": "^9.0.1",
+    "collect-in-channel": "^3.0.1",
+    "d3-queue": "^3.0.7",
     "handle-error-web": "^1.0.1",
+    "lodash.curry": "^4.1.1",
+    "lodash.flatten": "^4.4.0",
     "probable": "^2.1.2",
+    "request-body-mover": "^1.0.1",
     "route-state": "^1.2.0",
     "standard-bail": "^2.0.1"
   }

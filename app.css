@@ -37,21 +37,22 @@ button {
   border-width: 1px;
   border-color: #aaa;
   border-style: solid;
-  font-family: futura;
   min-width: 44px;
   box-shadow: #444 0 0 4px;
 }
 
-#silly-name-button {
+#doot-button {
   font-size: 2em;
 }
 
-#silly-name-field {
-  font-size: 6em;
-  flex-grow: 2;
+#text-field {
+  font-size: 2em;
+  /*! flex-grow: 2; */
   display: flex;
   align-items: center;
   word-break: break-all;
+  margin: 1em;
+  text-align: center;
 }
 
 #explanation-field {
