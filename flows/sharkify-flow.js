@@ -10,7 +10,25 @@ var findWhere = require('lodash.findwhere');
 var config = require('../config');
 var synth = window.speechSynthesis;
 
-var pitches = [0.0, 0.5, 2.0];
+const beatLength = 500;
+// Warning: This needs to be updated every time playDefs is updated.
+const totalSequenceLength = 7 * beatLength;
+
+var playDefs = [
+  { pitch: 0.0, beat: 0 },
+  { pitch: 0.5, beat: 1 },
+  { pitch: 2.0, beat: 2 },
+  { pitch: 2.0, beat: 2.67 },
+  { pitch: 2.0, beat: 3 },
+  { pitch: 2.0, beat: 3.67 },
+  { pitch: 2.0, beat: 4 },
+  { pitch: 2.0, beat: 4.67 },
+  { pitch: 2.0, beat: 5 },
+  { pitch: 2.0, beat: 5.67 },
+  { pitch: 2.0, beat: 6 },
+  { pitch: 2.0, beat: 6.67 },
+  { pitch: 2.0, beat: 7 }
+];
 
 function sharkifyFlow({ text }) {
   var channel = {
@@ -60,29 +78,32 @@ function singIt({ syllablesGroupedByWord }, done) {
   // use the IPA or Arpabet representation of the syllables.
   // Instead, we have to use whole words that sound sort
   // of like each syllable.
-  syllablesGroupedByWord.wordGuesses
-    .map(guesses => guesses[0])
-    .forEach(queueSyllable);
+  var wordGuesses = syllablesGroupedByWord.wordGuesses.map(
+    guesses => guesses[0]
+  );
+  padWithDoos(wordGuesses, playDefs.length).forEach(queueSyllable);
+
+  var voice = findWhere(synth.getVoices(), { lang: 'en-US' });
 
   function queueSyllable(wordApproximation, i) {
-    setTimeout(callSpeak, i * 500);
+    var { pitch, delay } = playDefs[i % playDefs.length];
+    setTimeout(
+      callSpeak,
+      delay * beatLength + ~~(playDefs.length / i) * totalSequenceLength
+    );
     function callSpeak() {
-      speakSyllable({ wordApproximation, pitch: getPitchForSequence(i) });
+      speakSyllable({ wordApproximation, pitch, voice });
     }
   }
 }
 
-function getPitchForSequence(i) {
-  return pitches[i];
-}
-
-function speakSyllable({ wordApproximation, pitch }) {
+function speakSyllable({ wordApproximation, pitch, voice }) {
   console.log('speaking syllable:', wordApproximation);
   var utterThis = new SpeechSynthesisUtterance(wordApproximation);
   utterThis.onend = onEnd;
   utterThis.onerror = onError;
   console.log(synth.getVoices());
-  utterThis.voice = findWhere(synth.getVoices(), { lang: 'en-US' });
+  utterThis.voice = voice;
   utterThis.pitch = pitch;
   //utterThis.rate = rate.value;
   synth.speak(utterThis);
@@ -96,6 +117,13 @@ function speakSyllable({ wordApproximation, pitch }) {
     console.log('onError', e);
     //done(new Error('SpeechSynthesisUtterance.onerror'));
   }
+}
+
+function padWithDoos(words, desiredLength) {
+  for (var i = 0; i < desiredLength - words.length; ++i) {
+    words.push('DOO');
+  }
+  return words;
 }
 
 module.exports = sharkifyFlow;
