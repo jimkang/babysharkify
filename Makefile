@@ -18,6 +18,7 @@ prettier:
 	prettier --single-quote --write "**/*.js"
 
 sync:
-	rsync -a $(HOMEDIR)/ $(USER)@$(SERVER):/$(APPDIR) --exclude node_modules/ \
-		--omit-dir-times --no-perms
+	scp index.html $(USER)@$(SERVER):$(APPDIR)
+	scp index.js $(USER)@$(SERVER):$(APPDIR)
+	scp app.css $(USER)@$(SERVER):$(APPDIR)
 
