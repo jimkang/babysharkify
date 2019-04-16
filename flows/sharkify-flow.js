@@ -12,23 +12,35 @@ var synth = window.speechSynthesis;
 
 const beatLength = 500;
 // Warning: This needs to be updated every time playDefs is updated.
-const totalSequenceLength = 7 * beatLength;
+//const totalSequenceLength = 7 * beatLength;
 
-var playDefs = [
-  { pitch: 0.0, beat: 0 },
-  { pitch: 0.5, beat: 1 },
-  { pitch: 2.0, beat: 2 },
-  { pitch: 2.0, beat: 2.67 },
-  { pitch: 2.0, beat: 3 },
-  { pitch: 2.0, beat: 3.67 },
-  { pitch: 2.0, beat: 4 },
-  { pitch: 2.0, beat: 4.67 },
-  { pitch: 2.0, beat: 5 },
-  { pitch: 2.0, beat: 5.67 },
-  { pitch: 2.0, beat: 6 },
-  { pitch: 2.0, beat: 6.67 },
-  { pitch: 2.0, beat: 7 }
+const d = 1.0; // I have no idea what this pitch actually is.
+const e = 1 + 2.0 / 7;
+const g = 1 + 5.0 / 7;
+const fSharp = 1 + 4.0 / 7;
+
+var riffA = [
+  { pitch: d, duration: 1 },
+  { pitch: e, duration: 1 },
+  { pitch: g, duration: 0.5 },
+  { pitch: g, duration: 0.5 },
+  { pitch: g, duration: 0.67 },
+  { pitch: g, duration: 0.33 },
+  { pitch: g, duration: 0.67 },
+  { pitch: g, duration: 0.33 },
+  { pitch: g, duration: 1 }
 ];
+
+var riffB = [
+  { pitch: g, duration: 0.5 },
+  { pitch: g, duration: 0.5 },
+  { pitch: fSharp, duration: 3 }
+];
+
+var playDefs = riffA
+  .concat(riffA)
+  .concat(riffA)
+  .concat(riffB);
 
 function sharkifyFlow({ text }) {
   var channel = {
@@ -81,31 +93,29 @@ function singIt({ syllablesGroupedByWord }, done) {
   var wordGuesses = syllablesGroupedByWord.wordGuesses.map(
     guesses => guesses[0]
   );
+  var nextScheduleTime = 0.0;
   padWithDoos(wordGuesses, playDefs.length).forEach(queueSyllable);
 
   var voice = findWhere(synth.getVoices(), { lang: 'en-US' });
 
   function queueSyllable(wordApproximation, i) {
-    var { pitch, delay } = playDefs[i % playDefs.length];
-    setTimeout(
-      callSpeak,
-      delay * beatLength + ~~(playDefs.length / i) * totalSequenceLength
-    );
+    var { pitch, duration } = playDefs[i % playDefs.length];
+    setTimeout(callSpeak, nextScheduleTime);
+    nextScheduleTime += duration;
     function callSpeak() {
-      speakSyllable({ wordApproximation, pitch, voice });
+      speakSyllable({ wordApproximation, pitch, voice, duration });
     }
   }
 }
 
-function speakSyllable({ wordApproximation, pitch, voice }) {
+function speakSyllable({ wordApproximation, pitch, voice, duration }) {
   console.log('speaking syllable:', wordApproximation);
   var utterThis = new SpeechSynthesisUtterance(wordApproximation);
   utterThis.onend = onEnd;
   utterThis.onerror = onError;
-  console.log(synth.getVoices());
   utterThis.voice = voice;
   utterThis.pitch = pitch;
-  //utterThis.rate = rate.value;
+  utterThis.rate = 1 / duration;
   synth.speak(utterThis);
 
   function onEnd() {
@@ -120,7 +130,8 @@ function speakSyllable({ wordApproximation, pitch, voice }) {
 }
 
 function padWithDoos(words, desiredLength) {
-  for (var i = 0; i < desiredLength - words.length; ++i) {
+  const numberOfDoosNeeded = desiredLength - words.length;
+  for (var i = 0; i < numberOfDoosNeeded; ++i) {
     words.push('DOO');
   }
   return words;
