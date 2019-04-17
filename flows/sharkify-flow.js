@@ -10,7 +10,7 @@ var findWhere = require('lodash.findwhere');
 var config = require('../config');
 var synth = window.speechSynthesis;
 
-const beatLength = 500;
+//const beatLength = 500;
 // Warning: This needs to be updated every time playDefs is updated.
 //const totalSequenceLength = 7 * beatLength;
 
@@ -91,7 +91,7 @@ function singIt({ syllablesGroupedByWord }, done) {
   // Instead, we have to use whole words that sound sort
   // of like each syllable.
   var wordGuesses = syllablesGroupedByWord.wordGuesses.map(
-    guesses => guesses[0]
+    guesses => guesses[0].toLowerCase()
   );
   var nextScheduleTime = 0.0;
   padWithDoos(wordGuesses, playDefs.length).forEach(queueSyllable);
