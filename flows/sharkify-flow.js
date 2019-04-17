@@ -37,11 +37,6 @@ var riffB = [
   { pitch: fSharp, duration: 3 }
 ];
 
-var playDefs = riffA
-  .concat(riffA)
-  .concat(riffA)
-  .concat(riffB);
-
 function sharkifyFlow({ text }) {
   var channel = {
     text,
@@ -90,27 +85,35 @@ function singIt({ syllablesGroupedByWord }, done) {
   // use the IPA or Arpabet representation of the syllables.
   // Instead, we have to use whole words that sound sort
   // of like each syllable.
-  var wordGuesses = syllablesGroupedByWord.wordGuesses.map(
-    guesses => guesses[0].toLowerCase()
+  var wordGuesses = syllablesGroupedByWord.wordGuesses.map(guesses =>
+    guesses[0].toLowerCase()
   );
   var nextScheduleTime = 0.0;
-  padWithDoos(wordGuesses, playDefs.length).forEach(queueSyllable);
+  var riffAWithWords = riffA.map(
+    curry(addWord)(padWithDoos(wordGuesses, riffA.length))
+  );
+  var riffBWithWords = riffB.map(
+    curry(addWord)(padWithDoos(wordGuesses, riffB.length))
+  );
+  var playDefs = riffAWithWords
+    .concat(riffAWithWords)
+    .concat(riffAWithWords)
+    .concat(riffBWithWords);
 
   var voice = findWhere(synth.getVoices(), { lang: 'en-US' });
+  playDefs.forEach(queueMusicEvent);
 
-  function queueSyllable(wordApproximation, i) {
-    var { pitch, duration } = playDefs[i % playDefs.length];
+  function queueMusicEvent({ pitch, duration, word }) {
     setTimeout(callSpeak, nextScheduleTime);
     nextScheduleTime += duration;
     function callSpeak() {
-      speakSyllable({ wordApproximation, pitch, voice, duration });
+      speakSyllable({ word, pitch, voice, duration });
     }
   }
 }
 
-function speakSyllable({ wordApproximation, pitch, voice, duration }) {
-  console.log('speaking syllable:', wordApproximation);
-  var utterThis = new SpeechSynthesisUtterance(wordApproximation);
+function speakSyllable({ word, pitch, voice, duration }) {
+  var utterThis = new SpeechSynthesisUtterance(word);
   utterThis.onend = onEnd;
   utterThis.onerror = onError;
   utterThis.voice = voice;
@@ -120,7 +123,6 @@ function speakSyllable({ wordApproximation, pitch, voice, duration }) {
 
   function onEnd() {
     //done();
-    console.log('Done speaking', wordApproximation);
   }
 
   function onError(e) {
@@ -135,6 +137,10 @@ function padWithDoos(words, desiredLength) {
     words.push('doo');
   }
   return words;
+}
+
+function addWord(words, musicEvent, i) {
+  return Object.assign({}, musicEvent, { word: words[i] });
 }
 
 module.exports = sharkifyFlow;
