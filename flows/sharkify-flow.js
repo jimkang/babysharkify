@@ -132,7 +132,7 @@ function speakSyllable({ wordApproximation, pitch, voice, duration }) {
 function padWithDoos(words, desiredLength) {
   const numberOfDoosNeeded = desiredLength - words.length;
   for (var i = 0; i < numberOfDoosNeeded; ++i) {
-    words.push('DOO');
+    words.push('doo');
   }
   return words;
 }
