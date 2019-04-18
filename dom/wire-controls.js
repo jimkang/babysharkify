@@ -7,7 +7,9 @@ var voiceSelect = d3.select('#voice-select');
 
 var buttonWired = false;
 
-function wireControls({ onSharkify, voices, selectedVoiceName }) {
+function wireControls({ onSharkify, voices, selectedVoiceName, text = '' }) {
+  textField.value = text;
+
   if (!buttonWired) {
     buttonWired = true;
     dootButton.addEventListener('click', onButtonClick);

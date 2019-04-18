@@ -12,7 +12,6 @@ var iscool = require('iscool')({ tragedyHappenedRecently: false });
 
 var config = require('../config');
 var synth = window.speechSynthesis;
-var textField = document.getElementById('text-field');
 var statusMessage = document.getElementById('status-message');
 
 const cantDoItMessage =
@@ -61,8 +60,6 @@ var riffB = [
 function sharkifyFlow({ text, voice }) {
   statusMessage.classList.add('hidden');
   statusMessage.classList.remove('visible');
-
-  textField.value = text;
 
   var inputWords = splitToWords(text);
   if (!inputWords.every(iscool)) {
@@ -156,6 +153,8 @@ function speakSyllable({ word, pitch, voice, duration }) {
   utterThis.voice = voice;
   utterThis.pitch = pitch;
   utterThis.rate = (1 / duration) * rateFactor;
+  // Chrome defaults to -1 volume?!
+  utterThis.volume = 0.5;
   synth.speak(utterThis);
 
   function onEnd() {
