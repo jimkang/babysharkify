@@ -5,9 +5,14 @@ var dootButton = document.getElementById('doot-button');
 var textField = document.getElementById('text-field');
 var voiceSelect = d3.select('#voice-select');
 
+var buttonWired = false;
+
 function wireControls({ onSharkify, voices, selectedVoiceName }) {
-  dootButton.removeEventListener('click', onButtonClick);
-  dootButton.addEventListener('click', onButtonClick);
+  if (!buttonWired) {
+    buttonWired = true;
+    dootButton.addEventListener('click', onButtonClick);
+  }
+
   var voiceNames = voices.map(v => v.name).sort();
   var voiceOptions = voiceSelect
     .selectAll('option')
