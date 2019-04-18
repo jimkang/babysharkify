@@ -11,31 +11,44 @@ var synth = window.speechSynthesis;
 
 var textField = document.getElementById('text-field');
 
-//const beatLength = 500;
-// Warning: This needs to be updated every time playDefs is updated.
-//const totalSequenceLength = 7 * beatLength;
+// In milliseconds.
+const beatLength = 600;
+// The lower the slower.
+const rateFactor = 1.2;
 
 const d = 1.0; // I have no idea what this pitch actually is.
 const e = 1 + 2.0 / 7;
 const g = 1 + 5.0 / 7;
 const fSharp = 1 + 4.0 / 7;
 
-var riffA = [
+var riffA1 = [
   { pitch: d, duration: 1 },
   { pitch: e, duration: 1 },
   { pitch: g, duration: 0.5 },
   { pitch: g, duration: 0.5 },
-  { pitch: g, duration: 0.67 },
-  { pitch: g, duration: 0.33 },
-  { pitch: g, duration: 0.67 },
-  { pitch: g, duration: 0.33 },
-  { pitch: g, duration: 1 }
+  { pitch: g, duration: 0.5 },
+  { pitch: g, duration: 0.25 },
+  { pitch: g, duration: 0.5 },
+  { pitch: g, duration: 0.25 },
+  { pitch: g, duration: 0.5 }
+];
+
+var riffA = [
+  { pitch: d, duration: 0.5 },
+  { pitch: e, duration: 0.5 },
+  { pitch: g, duration: 0.5 },
+  { pitch: g, duration: 0.5 },
+  { pitch: g, duration: 0.5 },
+  { pitch: g, duration: 0.25 },
+  { pitch: g, duration: 0.5 },
+  { pitch: g, duration: 0.25 },
+  { pitch: g, duration: 0.5 }
 ];
 
 var riffB = [
   { pitch: g, duration: 0.5 },
   { pitch: g, duration: 0.5 },
-  { pitch: fSharp, duration: 3 }
+  { pitch: fSharp, duration: 2 }
 ];
 
 function sharkifyFlow({ text, voice }) {
@@ -93,13 +106,11 @@ function singIt({ syllablesGroupedByWord, voice }, done) {
     guesses[0].toLowerCase()
   );
   var nextScheduleTime = 0.0;
-  var riffAWithWords = riffA.map(
-    curry(addWord)(padWithDoos(wordGuesses, riffA.length))
-  );
-  var riffBWithWords = riffB.map(
-    curry(addWord)(padWithDoos(wordGuesses, riffB.length))
-  );
-  var playDefs = riffAWithWords
+  var riffA1WithWords = addWordsToRiff(wordGuesses, riffA1);
+  var riffAWithWords = addWordsToRiff(wordGuesses, riffA);
+  var riffBWithWords = addWordsToRiff(wordGuesses, riffB);
+
+  var playDefs = riffA1WithWords
     .concat(riffAWithWords)
     .concat(riffAWithWords)
     .concat(riffBWithWords);
@@ -108,7 +119,7 @@ function singIt({ syllablesGroupedByWord, voice }, done) {
 
   function queueMusicEvent({ pitch, duration, word }) {
     setTimeout(callSpeak, nextScheduleTime);
-    nextScheduleTime += duration;
+    nextScheduleTime += duration * beatLength;
     function callSpeak() {
       speakSyllable({ word, pitch, voice, duration });
     }
@@ -121,7 +132,7 @@ function speakSyllable({ word, pitch, voice, duration }) {
   utterThis.onerror = onError;
   utterThis.voice = voice;
   utterThis.pitch = pitch;
-  utterThis.rate = 1 / duration;
+  utterThis.rate = (1 / duration) * rateFactor;
   synth.speak(utterThis);
 
   function onEnd() {
@@ -144,6 +155,10 @@ function padWithDoos(words, desiredLength) {
 
 function addWord(words, musicEvent, i) {
   return Object.assign({}, musicEvent, { word: words[i] });
+}
+
+function addWordsToRiff(wordGuesses, riff) {
+  return riff.map(curry(addWord)(padWithDoos(wordGuesses, riff.length)));
 }
 
 module.exports = sharkifyFlow;
