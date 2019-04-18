@@ -20,7 +20,7 @@ const cantDoItMessage =
 // In milliseconds.
 const beatLength = 600;
 // The lower the slower.
-const rateFactor = 1.2;
+const rateFactor = 1.0; //1.2;
 
 const d = 1.0; // I have no idea what this pitch actually is.
 const e = 1 + 2.0 / 7;
