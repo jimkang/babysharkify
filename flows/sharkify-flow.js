@@ -148,22 +148,24 @@ function singIt({ syllablesGroupedByWord, voice, maxRate }, done) {
 }
 
 function speakSyllable({ word, pitch, voice, duration, maxRate }) {
-  if (synth.speaking) {
-    synth.cancel();
-  }
   var utterThis = new SpeechSynthesisUtterance(word);
   utterThis.onend = onEnd;
   utterThis.onerror = onError;
   utterThis.voice = voice;
   utterThis.pitch = pitch;
   // As of 2019-04-18, if you set the rate to over 2.0 on Chrome
-  // voice synthesis stops working until you restart Chrome.
+  // on Linux, voice synthesis stops working until you restart Chrome.
   utterThis.rate = (1 / duration) * rateFactor;
   if (utterThis.rate > maxRate) {
     utterThis.rate = maxRate;
   }
   // Chrome defaults to -1 volume?!
   utterThis.volume = 0.5;
+  // On browsers that don't play at rates over 2.0, the
+  // syllables will sound out-of-rhythm, so we try to
+  // cancel any current talking so we can start the next
+  // syllable on time.
+  synth.cancel();
   synth.speak(utterThis);
 
   function onEnd() {
