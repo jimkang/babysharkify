@@ -159,6 +159,7 @@ function speakSyllable({ word, pitch, voice, duration, maxRate }) {
   if (utterThis.rate > maxRate) {
     utterThis.rate = maxRate;
   }
+  console.log('rate', utterThis.rate);
   // Chrome defaults to -1 volume?!
   utterThis.volume = 0.5;
   // On browsers that don't play at rates over 2.0, the
