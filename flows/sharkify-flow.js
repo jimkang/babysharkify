@@ -15,6 +15,9 @@ var synth = window.speechSynthesis;
 var textField = document.getElementById('text-field');
 var statusMessage = document.getElementById('status-message');
 
+const cantDoItMessage =
+  "Sorry, I can't figure out how to sing that. Try putting something else in.";
+
 // In milliseconds.
 const beatLength = 600;
 // The lower the slower.
@@ -65,7 +68,7 @@ function sharkifyFlow({ text, voice }) {
   if (!inputWords.every(iscool)) {
     renderMessage({
       targetId: 'status-message',
-      message: "I don't understand. Try putting something else in."
+      message: cantDoItMessage
     });
     return;
   }
@@ -106,11 +109,18 @@ function singIt({ syllablesGroupedByWord, voice }, done) {
     done(new Error('speechSynthesis.speaking'));
     return;
   }
+  var wordGuesses;
   if (
-    !syllablesGroupedByWord.wordGuesses ||
-    syllablesGroupedByWord.wordGuesses.length < 1
+    syllablesGroupedByWord &&
+    syllablesGroupedByWord.wordGuesses &&
+    syllablesGroupedByWord.wordGuesses.length > 0
   ) {
-    done(new Error('Could not get syllables.'));
+    wordGuesses = syllablesGroupedByWord.wordGuesses.map(guesses =>
+      guesses[0].toLowerCase()
+    );
+  }
+  if (!wordGuesses) {
+    renderMessage({ targetId: 'status-message', message: cantDoItMessage });
     return;
   }
 
@@ -118,9 +128,6 @@ function singIt({ syllablesGroupedByWord, voice }, done) {
   // use the IPA or Arpabet representation of the syllables.
   // Instead, we have to use whole words that sound sort
   // of like each syllable.
-  var wordGuesses = syllablesGroupedByWord.wordGuesses.map(guesses =>
-    guesses[0].toLowerCase()
-  );
   var nextScheduleTime = 0.0;
   var riffA1WithWords = addWordsToRiff(wordGuesses, riffA1);
   var riffAWithWords = addWordsToRiff(wordGuesses, riffA);
