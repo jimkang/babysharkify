@@ -5,7 +5,6 @@ var CollectCtor = require('collect-in-channel');
 var curry = require('lodash.curry');
 var handleError = require('handle-error-web');
 var bodyMover = require('request-body-mover');
-var findWhere = require('lodash.findwhere');
 
 var config = require('../config');
 var synth = window.speechSynthesis;
@@ -39,12 +38,13 @@ var riffB = [
   { pitch: fSharp, duration: 3 }
 ];
 
-function sharkifyFlow({ text }) {
+function sharkifyFlow({ text, voice }) {
   textField.value = text;
 
   var channel = {
     text,
-    wordworkerKey: config.wordworker.key
+    wordworkerKey: config.wordworker.key,
+    voice
   };
   var Collect = CollectCtor({ channel });
 
@@ -72,7 +72,7 @@ function getSyllables({ wordworkerKey, text }, done) {
   request(reqOpts, bodyMover(done));
 }
 
-function singIt({ syllablesGroupedByWord }, done) {
+function singIt({ syllablesGroupedByWord, voice }, done) {
   if (synth.speaking) {
     done(new Error('speechSynthesis.speaking'));
     return;
@@ -104,7 +104,6 @@ function singIt({ syllablesGroupedByWord }, done) {
     .concat(riffAWithWords)
     .concat(riffBWithWords);
 
-  var voice = findWhere(synth.getVoices(), { lang: 'en-US' });
   playDefs.forEach(queueMusicEvent);
 
   function queueMusicEvent({ pitch, duration, word }) {
