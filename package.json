@@ -30,12 +30,14 @@
     "d3-queue": "^3.0.7",
     "d3-selection": "^1.4.0",
     "handle-error-web": "^1.0.1",
+    "iscool": "^2.0.0",
     "lodash.curry": "^4.1.1",
     "lodash.findwhere": "^3.1.0",
     "lodash.flatten": "^4.4.0",
     "probable": "^2.1.2",
     "request-body-mover": "^1.0.1",
     "route-state": "^1.2.0",
+    "split-to-words": "^1.0.2",
     "standard-bail": "^2.0.1"
   }
 }

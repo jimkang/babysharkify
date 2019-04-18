@@ -5,10 +5,13 @@ var CollectCtor = require('collect-in-channel');
 var curry = require('lodash.curry');
 var handleError = require('handle-error-web');
 var bodyMover = require('request-body-mover');
+var splitToWords = require('split-to-words');
+var renderMessage = require('../dom/render-message');
+
+var iscool = require('iscool')({ tragedyHappenedRecently: false });
 
 var config = require('../config');
 var synth = window.speechSynthesis;
-
 var textField = document.getElementById('text-field');
 
 // In milliseconds.
@@ -52,7 +55,18 @@ var riffB = [
 ];
 
 function sharkifyFlow({ text, voice }) {
+  document.getElementById('status-message').classList.add('hidden');
+
   textField.value = text;
+
+  var inputWords = splitToWords(text);
+  if (!inputWords.every(iscool)) {
+    renderMessage({
+      targetId: 'status-message',
+      message: "I don't understand. Try putting something else in."
+    });
+    return;
+  }
 
   var channel = {
     text,
