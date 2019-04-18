@@ -10,6 +10,8 @@ var findWhere = require('lodash.findwhere');
 var config = require('../config');
 var synth = window.speechSynthesis;
 
+var textField = document.getElementById('text-field');
+
 //const beatLength = 500;
 // Warning: This needs to be updated every time playDefs is updated.
 //const totalSequenceLength = 7 * beatLength;
@@ -38,6 +40,8 @@ var riffB = [
 ];
 
 function sharkifyFlow({ text }) {
+  textField.value = text;
+
   var channel = {
     text,
     wordworkerKey: config.wordworker.key
