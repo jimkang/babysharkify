@@ -20,7 +20,7 @@ const cantDoItMessage =
 // In milliseconds.
 const beatLength = 600;
 // The lower the slower.
-const rateFactor = 0.99; //1.2;
+const defaultRateFactor = 0.99; //1.2;
 
 const d = 1.0; // I have no idea what this pitch actually is.
 const e = 1 + 2.0 / 7;
@@ -57,7 +57,7 @@ var riffB = [
   { pitch: fSharp, duration: 2 }
 ];
 
-function sharkifyFlow({ text, voice, maxRate }) {
+function sharkifyFlow({ text, voice, maxRate, rateFactor }) {
   statusMessage.classList.add('hidden');
   statusMessage.classList.remove('visible');
 
@@ -74,7 +74,8 @@ function sharkifyFlow({ text, voice, maxRate }) {
     text,
     wordworkerKey: config.wordworker.key,
     voice,
-    maxRate
+    maxRate,
+    rateFactor
   };
   var Collect = CollectCtor({ channel });
 
@@ -102,7 +103,7 @@ function getSyllables({ wordworkerKey, text }, done) {
   request(reqOpts, bodyMover(done));
 }
 
-function singIt({ syllablesGroupedByWord, voice, maxRate }, done) {
+function singIt({ syllablesGroupedByWord, voice, maxRate, rateFactor }, done) {
   if (synth.speaking) {
     done(new Error('speechSynthesis.speaking'));
     return;
@@ -142,12 +143,19 @@ function singIt({ syllablesGroupedByWord, voice, maxRate }, done) {
     setTimeout(callSpeak, nextScheduleTime);
     nextScheduleTime += duration * beatLength;
     function callSpeak() {
-      speakSyllable({ word, pitch, voice, duration, maxRate });
+      speakSyllable({ word, pitch, voice, duration, maxRate, rateFactor });
     }
   }
 }
 
-function speakSyllable({ word, pitch, voice, duration, maxRate }) {
+function speakSyllable({
+  word,
+  pitch,
+  voice,
+  duration,
+  maxRate,
+  rateFactor = defaultRateFactor
+}) {
   var utterThis = new SpeechSynthesisUtterance(word);
   utterThis.onend = onEnd;
   utterThis.onerror = onError;

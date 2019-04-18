@@ -34,7 +34,7 @@ function routeWhenVoicesAreReady() {
   }
 }
 
-function followRoute({ text, selectedVoiceName }) {
+function followRoute({ text, selectedVoiceName, rateFactor }) {
   let voice = findWhere(voices, { name: selectedVoiceName });
   if (!voice) {
     voice = findWhere(voices, { default: true });
@@ -46,7 +46,7 @@ function followRoute({ text, selectedVoiceName }) {
     selectedVoiceName = voice.name;
   }
   if (voice && text && (interacted || !isChrome())) {
-    sharkifyFlow({ text, voice }); //, maxRate: isChrome() ? 2.0 : undefined });
+    sharkifyFlow({ text, voice, rateFactor }); //, maxRate: isChrome() ? 2.0 : undefined });
   }
 
   wireControls({ onSharkify, voices, selectedVoiceName, text });
