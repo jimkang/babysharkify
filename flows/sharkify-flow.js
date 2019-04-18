@@ -57,7 +57,7 @@ var riffB = [
   { pitch: fSharp, duration: 2 }
 ];
 
-function sharkifyFlow({ text, voice }) {
+function sharkifyFlow({ text, voice, maxRate }) {
   statusMessage.classList.add('hidden');
   statusMessage.classList.remove('visible');
 
@@ -73,7 +73,8 @@ function sharkifyFlow({ text, voice }) {
   var channel = {
     text,
     wordworkerKey: config.wordworker.key,
-    voice
+    voice,
+    maxRate
   };
   var Collect = CollectCtor({ channel });
 
@@ -101,7 +102,7 @@ function getSyllables({ wordworkerKey, text }, done) {
   request(reqOpts, bodyMover(done));
 }
 
-function singIt({ syllablesGroupedByWord, voice }, done) {
+function singIt({ syllablesGroupedByWord, voice, maxRate }, done) {
   if (synth.speaking) {
     done(new Error('speechSynthesis.speaking'));
     return;
@@ -141,18 +142,26 @@ function singIt({ syllablesGroupedByWord, voice }, done) {
     setTimeout(callSpeak, nextScheduleTime);
     nextScheduleTime += duration * beatLength;
     function callSpeak() {
-      speakSyllable({ word, pitch, voice, duration });
+      speakSyllable({ word, pitch, voice, duration, maxRate });
     }
   }
 }
 
-function speakSyllable({ word, pitch, voice, duration }) {
+function speakSyllable({ word, pitch, voice, duration, maxRate }) {
+  if (synth.speaking) {
+    synth.cancel();
+  }
   var utterThis = new SpeechSynthesisUtterance(word);
   utterThis.onend = onEnd;
   utterThis.onerror = onError;
   utterThis.voice = voice;
   utterThis.pitch = pitch;
+  // As of 2019-04-18, if you set the rate to over 2.0 on Chrome
+  // voice synthesis stops working until you restart Chrome.
   utterThis.rate = (1 / duration) * rateFactor;
+  if (utterThis.rate > maxRate) {
+    utterThis.rate = maxRate;
+  }
   // Chrome defaults to -1 volume?!
   utterThis.volume = 0.5;
   synth.speak(utterThis);

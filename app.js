@@ -39,14 +39,14 @@ function followRoute({ text, selectedVoiceName }) {
   if (!voice) {
     voice = findWhere(voices, { default: true });
   }
-  if (!voice) {
-    voice = findWhere(voices, { lang: 'en-US' });
+  if (!voice || voice.lang === 'en-US') {
+    voice = findWhere(voices, { lang: 'en-GB' });
   }
   if (voice) {
     selectedVoiceName = voice.name;
   }
   if (voice && text && (interacted || !isChrome())) {
-    sharkifyFlow({ text, voice });
+    sharkifyFlow({ text, voice }); //, maxRate: isChrome() ? 2.0 : undefined });
   }
 
   wireControls({ onSharkify, voices, selectedVoiceName, text });
