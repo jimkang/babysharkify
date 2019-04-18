@@ -13,6 +13,7 @@ var iscool = require('iscool')({ tragedyHappenedRecently: false });
 var config = require('../config');
 var synth = window.speechSynthesis;
 var textField = document.getElementById('text-field');
+var statusMessage = document.getElementById('status-message');
 
 // In milliseconds.
 const beatLength = 600;
@@ -55,7 +56,8 @@ var riffB = [
 ];
 
 function sharkifyFlow({ text, voice }) {
-  document.getElementById('status-message').classList.add('hidden');
+  statusMessage.classList.add('hidden');
+  statusMessage.classList.remove('visible');
 
   textField.value = text;
 
