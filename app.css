@@ -10,11 +10,13 @@ body {
 }
 
 .hidden {
+  height: 0;
   opacity: 0;
   transition: opacity 1s;
 }
 
 .visible {
+  display: block;
   opacity: 1;
   transition: opacity 2s;
 }

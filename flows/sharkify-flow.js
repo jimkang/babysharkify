@@ -19,8 +19,8 @@ const cantDoItMessage =
 
 // In milliseconds.
 const beatLength = 600;
-// The lower the slower.
-const defaultRateFactor = 0.99; //1.2;
+// The lower the slower. 0.7 seems to be OK on Firefox on Linux, and all three on Mac.
+const defaultRateFactor = 0.7; //1.2;
 
 const d = 1.0; // I have no idea what this pitch actually is.
 const e = 1 + 2.0 / 7;
@@ -105,7 +105,13 @@ function getSyllables({ wordworkerKey, text }, done) {
 
 function singIt({ syllablesGroupedByWord, voice, maxRate, rateFactor }, done) {
   if (synth.speaking) {
-    done(new Error('speechSynthesis.speaking'));
+    //synth.cancel();
+    renderMessage({
+      targetId: 'status-message',
+      message:
+        "I'm still singing something right now. Try again when I'm through!"
+    });
+    setTimeout(done, 0);
     return;
   }
   var wordGuesses;
@@ -138,6 +144,9 @@ function singIt({ syllablesGroupedByWord, voice, maxRate, rateFactor }, done) {
     .concat(riffBWithWords);
 
   playDefs.forEach(queueMusicEvent);
+
+  // TODO/Warning: Speaking not necessarily done when this function is.
+  setTimeout(done, 0);
 
   function queueMusicEvent({ pitch, duration, word }) {
     setTimeout(callSpeak, nextScheduleTime);
