@@ -1,10 +1,24 @@
+@font-face {
+  font-family: Public Sans;
+  src: url('fonts/PublicSans-Regular.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal
+}
+
+@font-face {
+  font-family: Public Sans;
+  src: url('fonts/PublicSans-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: bold;
+}
+
 body {
   font-size: 24pt;
-  font-family: futura, sans-serif;
+  font-family: Public Sans, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #ffe264;
+  background-color: #fff27e;
   color: #444;
   height: 100%;
 }
@@ -28,9 +42,15 @@ body {
   padding: 1em;
 }
 
+input {
+  font-family: Public Sans, sans-serif;
+}
+
 button {
   text-transform: uppercase;
   color: #444;
+  font-family: Public Sans, sans-serif;
+  font-weight: bold;
   font-size: 0.8em;
   cursor: pointer;
   background-color: white;
@@ -61,6 +81,30 @@ button {
   font-style: italic;
   flex-grow: 1;
   margin: 1em;
+}
+
+.notes {
+  margin-top: 7em;
+  width: 50%;
+  min-width: 20em;
+}
+
+.notes ul li {
+  margin: 0.5em;
+}
+
+footer {
+  margin-top: 4em;
+  padding-bottom: 4em;
+}
+
+a:link {
+  color: #333;
+  font-weight: bold;
+}
+
+a:visited {
+  color: #555;
 }
 
 @media all and (max-height: 568px) {
