@@ -1,9 +1,11 @@
 var d3 = require('d3-selection');
-var accessor = require('accessor')();
+var StrokeRouter = require('strokerouter');
 
+var accessor = require('accessor')();
 var dootButton = document.getElementById('doot-button');
 var textField = document.getElementById('text-field');
 var voiceSelect = d3.select('#voice-select');
+var textFieldStrokeRouter = StrokeRouter(textField);
 
 var buttonWired = false;
 
@@ -13,6 +15,7 @@ function wireControls({ onSharkify, voices, selectedVoiceName, text = '' }) {
   if (!buttonWired) {
     buttonWired = true;
     dootButton.addEventListener('click', onButtonClick);
+    textFieldStrokeRouter.routeKeyUp('enter', null, onButtonClick);
   }
 
   var voiceNames = voices.map(v => v.name).sort();
