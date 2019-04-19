@@ -65,16 +65,21 @@ button {
 
 #doot-button {
   font-size: 2em;
+  flex-shrink: 0; /* Don't let the borders fail to contain the text on Chrome. */
 }
 
 #text-field {
   font-size: 2em;
-  /*! flex-grow: 2; */
   display: flex;
   align-items: center;
   word-break: break-all;
   margin: 1em;
   text-align: center;
+}
+
+#voice-select {
+  flex-shrink: 0; /* Don't let the borders fail to contain the text on Chrome. */
+  font-size: 1.5em;
 }
 
 #explanation-field {
