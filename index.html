@@ -1,44 +1,56 @@
 <html>
-<head>
-  <title>Baby Sharkify!</title>
-  <link rel="stylesheet" href="app.css">
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
+  <head>
+    <title>Baby Sharkify!</title>
+    <link rel="stylesheet" href="app.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <input type="text" id="text-field" />
 
+    <button id="doot-button">Doot-doot-do-doo-do-doo-do-doot!</button>
 
-<input type="text" id="text-field"></input>
+    <div id="status-message" class="hidden"></div>
 
-<button id="doot-button">Doot-doot-do-doo-do-doo-do-doot!</button>
+    <h3>Choose your singer:</h3>
+    <select id="voice-select"> </select>
 
-<div id="status-message" class="hidden"></div>
+    <section class="notes">
+      <h4>How to use</h4>
+      <ul>
+        <li>Make sure your sound is on.</li>
+        <li>
+          Type the words you want this weird computer voice to the tune of Baby
+          Shark.
+        </li>
+        <li>Click the button!</li>
+        <li>You can change the voices with the pulldown below the button.</li>
+        <li>
+          If you want to easily get back to something you played, just copy the
+          URL, including the part after the #. When you visit that URL again,
+          the app will set things up as they were when you copied the URL.
+        </li>
+      </ul>
+      <h4>Why it sounds weird and sometimes doesn't work</h4>
+      <p class="explanation">
+        This app uses the
+        <a
+          href="https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis"
+          >Speech Synthesis browser API</a
+        >, which is under development. So, that means that, in the future, it
+        may sound way better or much worse than it does when it was initially
+        made, here in April of 2019. Further, you get a lot of variety from
+        computer to computer, since each OS supports voice synthesis in a
+        different way! (Sadly, it seems to just silently fail on the one mobile
+        browser I tried, Mobile Safari.)
+      </p>
+    </section>
 
-<h3>Choose your singer:</h3>
-<select id="voice-select">
-</select>
+    <footer>
+      <a href="https://jimkang.com">Home</a> |
+      <a href="https://tinyletter.com/jimkang">My newsletter about projects</a>
+    </footer>
 
-<section class="notes">
-<h4>How to use</h4>
-<ul>
-  <li>Make sure your sound is on.</li>
-  <li>Type the words you want this weird computer voice to the tune of Baby Shark.</li>
-  <li>Click the button!</li>
-  <li>You can change the voices with the pulldown below the button.</li>
-  <li>If you want to easily get back to something you played, just copy the URL, including the part after the #. When you visit that URL again, the app will set things up as they were when you copied the URL.</li>
-</ul>
-<h4>Why it sounds weird and sometimes doesn't work</h4>
-<p class="explanation">
-This app uses the <a href="https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis">Speech Synthesis browser API</a>, which is under development. So, that means that, in the future, it may sound way better or much worse than it does when it was initially made, here in April of 2019. Further, you get a lot of variety from computer to computer, since each OS supports voice synthesis in a different way! (Sadly, it seems to just silently fail on the one mobile browser I tried, Mobile Safari.)
-</p>
-</section>
-
-<footer>
-  <a href="https://jimkang.com">Home</a> |
-  <a href="https://tinyletter.com/jimkang">My newsletter about projects</a>
-</footer>
-
-<script src="index.js"></script>
-
-</body>
+    <script src="index.js"></script>
+  </body>
 </html>
