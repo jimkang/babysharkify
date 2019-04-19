@@ -3,6 +3,7 @@ var RouteState = require('route-state');
 var wireControls = require('./dom/wire-controls');
 var sharkifyFlow = require('./flows/sharkify-flow');
 var findWhere = require('lodash.findwhere');
+var getPreferredVoice = require('./get-preferred-voice');
 
 var routeState;
 var voices;
@@ -37,10 +38,7 @@ function routeWhenVoicesAreReady() {
 function followRoute({ text, selectedVoiceName, rateFactor }) {
   let voice = findWhere(voices, { name: selectedVoiceName });
   if (!voice) {
-    voice = findWhere(voices, { default: true });
-  }
-  if (!voice || voice.lang === 'en-US') {
-    voice = findWhere(voices, { lang: 'en-GB' });
+    voice = getPreferredVoice(voices);
   }
   if (voice) {
     selectedVoiceName = voice.name;
