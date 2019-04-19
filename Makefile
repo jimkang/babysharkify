@@ -21,4 +21,5 @@ sync:
 	scp index.html $(USER)@$(SERVER):$(APPDIR)
 	scp index.js $(USER)@$(SERVER):$(APPDIR)
 	scp app.css $(USER)@$(SERVER):$(APPDIR)
+	rsync -a fonts $(USER)@$(SERVER):$(APPDIR)
 
