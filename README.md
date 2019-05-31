@@ -1,7 +1,7 @@
 babysharkify
 ==================
 
-Doot do-doot do-doo!
+[Doot doot doot do-doo do-doo!](https://jimkang.com/babysharkify/#text=what%20the%20fuck)
 
 Installation
 ------------
